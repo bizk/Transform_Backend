@@ -15,16 +15,15 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequestMapping("controller")
 public class ApiController {
-	//Aca van los endpoints
+
+	//Aca van los endpoints, este es un endpoint de prueba
+	//Cuando le pegamos aca nos va a devolver lo que le pidamos
+	//value -> link a donde le pegamos en el endpoint
+	//method es el method usado .GET para obtener info .POST para mandar
+	//headers va a ser el tipo de dato que vamos a recibir
 	@RequestMapping(value = "/getTest", method = RequestMethod.GET, headers="Accept=application/json")
-	//@ResponseBody
 	public ResponseEntity<String> testEndpoint_1() {
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.add("Content_Type", "application/json");
-//		headers.add("Responded", "hola mundo");
-//		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-//				.path("/getTest").buildAndExpand(headers).toUri();
-//		return ResponseEntity.created(location).build();
+
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 }
