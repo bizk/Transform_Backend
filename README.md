@@ -1,6 +1,9 @@
 # Transform Backend
 ***
 
+### Como usar git
+Para usar git de manera correcta visitar la wiki https://github.com/bizk/Transform_Backend/wiki/How-to-use-Git-(spanish)
+
 ### Como importar el proyecto
 Para importar el proyect visitar la wiki https://github.com/bizk/Transform_Backend/wiki/Project-Setup
 
