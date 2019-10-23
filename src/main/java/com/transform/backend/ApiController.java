@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
-
+import com.transform.dao.ProductoDAO;
 import com.transform.models.Producto;
 
 @RestController
@@ -64,32 +64,57 @@ public class ApiController {
 	//EndPoint Example: localhost:8080/controller/searchByName?searchName=botella
 	@RequestMapping(value="/searchByName", method = RequestMethod.GET)
 	@ResponseBody
-	public List<String> searchByNameEndPoint(@RequestParam("searchName") String searchName) {
+	public List<String> searchByNameEndPoint(@RequestParam("name") String name) {
 		List<String> jsonList = new ArrayList<String>();
-		System.out.println(searchName);
+
 		//We create the Gson consructor
 		Gson gson = new Gson();
 		
-		//Producto mock (we should get this from the daos)
-		ArrayList tags1 = new ArrayList<String>();
-		tags1.add("tag1");
-		tags1.add("tag2");
-		Producto mockProducto1 = new Producto("botella 1", "estoEsUnaURL", "botella de plastico", tags1);		
-		//We create the jsonString with gson.toJson(producto)
-		String jsonProduct1 = gson.toJson(mockProducto1);
-		
-		ArrayList tags2 = new ArrayList<String>();
-		tags1.add("tag1");
-		tags1.add("tag3");
-		Producto mockProducto2 = new Producto("botella 2", "estoEsUnaURL", "botella de vidrio", tags2);
-		String jsonProduct2 = gson.toJson(mockProducto2);
-
-		jsonList.add(jsonProduct1);
-		jsonList.add(jsonProduct2);
+		List<Producto> productos = ProductoDAO.searchByName(name);
+		for(Producto pr: productos) {
+			String jsonProd = gson.toJson(pr);
+			jsonList.add(jsonProd);
+		}
 		
 		// # # # T O D O # # #
 		//TODO conect with DAO so we can return non mocked values
 		
 		return jsonList;
 	}
+
+	@RequestMapping(value="/searchByTagEndPoint", method = RequestMethod.GET)
+	@ResponseBody
+	public List<String> searchByTagEndPoint(@RequestParam("tag1") String tag1, @RequestParam("tag2") String tag2) {
+		List<String> jsonList = new ArrayList<String>();
+
+		//We create the Gson consructor
+		Gson gson = new Gson();
+		
+		List<Producto> productos = ProductoDAO.searchByTag(tag1, tag2);
+		for(Producto pr: productos) {
+			String jsonProd = gson.toJson(pr);
+			jsonList.add(jsonProd);
+		}
+				
+		// # # # T O D O # # #
+		//TODO conect with DAO so we can return non mocked values
+		
+		return jsonList;
+	}
+
+	@RequestMapping(value="/searchById", method = RequestMethod.GET)
+	@ResponseBody
+	public String searchById(@RequestParam("id") String id) {
+		//We create the Gson consructor
+		Gson gson = new Gson();
+		
+		Producto product = ProductoDAO.searchById(id);
+		String jsonProduct = gson.toJson(product);
+				
+		// # # # T O D O # # #
+		//TODO conect with DAO so we can return non mocked values
+		
+		return jsonProduct;
+	}
+
 }
