@@ -40,7 +40,7 @@ public class ApiController {
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
-		Producto productoTest = new Producto("producto de prueba", "", "Esto es un test de producto", new ArrayList<String>());
+		Producto productoTest = new Producto("prueba","producto de prueba", "", "Esto es un test de producto", new ArrayList<String>());
 		//configure Object mapper for pretty print
 		objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 				
@@ -86,6 +86,19 @@ public class ApiController {
 	@ResponseBody
 	public List<String> searchByTagEndPoint(@RequestParam("tag1") String tag1, @RequestParam("tag2") String tag2) {
 		List<String> jsonList = new ArrayList<String>();
+		//Producto mock (we should get this from the daos)
+		ArrayList tags1 = new ArrayList<String>();
+		tags1.add("tag1");
+		tags1.add("tag2");
+		Producto mockProducto1 = new Producto("botella1","botella 1", "estoEsUnaURL", "botella de plastico", tags1);		
+		//We create the jsonString with gson.toJson(producto)
+		String jsonProduct1 = gson.toJson(mockProducto1);
+		
+		ArrayList tags2 = new ArrayList<String>();
+		tags1.add("tag1");
+		tags1.add("tag3");
+		Producto mockProducto2 = new Producto("botella2","botella 2", "estoEsUnaURL", "botella de vidrio", tags2);
+		String jsonProduct2 = gson.toJson(mockProducto2);
 
 		//We create the Gson consructor
 		Gson gson = new Gson();

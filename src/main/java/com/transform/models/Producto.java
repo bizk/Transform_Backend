@@ -3,13 +3,15 @@ package com.transform.models;
 import java.util.List;
 
 public class Producto {
+	private String id;
 	private String nombre;
 	private String urlImg;
 	private String descripcion;
 	private List<String> tags;
 	
-	public Producto(String nombre, String urlImg, String descripcion, List<String> tags) {
+	public Producto(String id, String nombre, String urlImg, String descripcion, List<String> tags) {
 		super();
+		this.id = id;
 		this.nombre = nombre;
 		this.urlImg = urlImg;
 		this.descripcion = descripcion;
@@ -39,6 +41,10 @@ public class Producto {
 	}
 	public void setTags(List<String> tags) {
 		this.tags = tags;
+	}
+
+	public String getID() {
+		return this.id;
 	}
 	
 	
