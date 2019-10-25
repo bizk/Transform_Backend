@@ -4,60 +4,71 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import org.bson.Document;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.transform.configs.DbConfig;
 import com.transform.models.Producto;
 
 public class daoProducto {
 	//es solo un test
 	//lee json escrito como String
-	public List<Producto> getObjetosString() throws FileNotFoundException {
+	public List<Producto> getAllProducts() throws FileNotFoundException {
 		
 		List<Producto> resultadoDeBusqueda=new ArrayList<Producto>();
+		//Momento de la conexion con la BD
 		
-		JsonParser parser = new JsonParser();
+		MongoDatabase db = DbConfig.getConfiguration().getDB();
+		MongoCollection<Document> collectionProductos = db.getCollection("productos");
 		
-		String js= ("[{\"id\":\"1-1\",\"nombre\":\"botella de plastico\",\"urlImg\":\"url_imagen\",\"descripcion\":\"botella de plastico\",\"tags\":[\"botella\",\"plastico\"],\"materiales\":[{\"id\":\"0-1\",\"nombre\":\"plastico\",\"logo\":\"url_logo\",\"es reciclable\":true,\"texto\":\"plastico\",\"como reciclar\":\"limpiar y secar\"}],\"posteos\":[\"2-1\",\"2-2\",\"2-3\",\"2-4\"]}]");
+		System.out.println("Collection productos selected successfully"); 
+
+		// Getting the iterable object 
+		FindIterable<Document> iterDoc = collectionProductos.find(); 
+		int i = 1; 
+
+		// Getting the iterator 
+		Iterator<Document> it = iterDoc.iterator(); 
+
+		ArrayList<Document> documentos = new ArrayList<Document>();	    
+		while (it.hasNext()) {  
+			documentos.add(it.next());
+			i++; 
+		}
+
+		//System.out.println(documentos.get(4).toJson());
 		
-		JsonArray gsonArchivo=parser.parse(js).getAsJsonArray();
-			
 		Gson gson = new Gson();
-			
-		Producto[] productos=gson.fromJson(gsonArchivo, Producto[].class);
-		System.out.println(new Gson().toJson(productos));
-			
-		for (Producto p:productos) {
-			
-			//no es necesario por ahora pero puede servir para buscar dentro de los nombres
-			/*if (p.getNombre().contains(busqueda)) {
-			}*/
-			
-			//muestra los productos
-			System.out.println(p);
-			
+
+				
+		for(Document doc : documentos){
+			String json = doc.toJson();
+			Producto p = gson.fromJson(json, Producto.class);
 			resultadoDeBusqueda.add(p);
 		}
+		
 		
 		return resultadoDeBusqueda;
 		
 	}
+	
 	//lee archivo .json
-	public List<Producto> getObjetosArchNombre(String busqueda) throws FileNotFoundException {
+	public List<Producto> searchByName(String busqueda) throws FileNotFoundException {
 		
 		List<Producto> resultadoDeBusqueda=new ArrayList<Producto>();
 		
-		JsonParser parser = new JsonParser();
-		//para la obtener la direccion abrir las propiedades del archivo json y copiar direccion "location"
-		JsonArray gsonArchivo=parser.parse(new FileReader(new File("C:\\Users\\fedej\\Locales\\seminario\\Transform_Backend\\src\\main\\java\\com\\transform\\daos\\datos.json"))).getAsJsonArray();
-			
-		Gson gson = new Gson();
-			
-		Producto[] productos=gson.fromJson(gsonArchivo, Producto[].class);
+		List<Producto> productos = this.getAllProducts();
 		
-		for (Producto p:productos) {
+		for (Producto p : productos) {
 			
 			//creo que tambien sirve indexOf en lugar de contains
 			if (p.getNombre().contains(busqueda)) {
@@ -76,15 +87,9 @@ public class daoProducto {
 		
 		List<Producto> resultadoDeBusqueda=new ArrayList<Producto>();
 		
-		JsonParser parser = new JsonParser();
-		//para la obtener la direccion abrir las propiedades del archivo json y copiar direccion "location"
-		JsonArray gsonArchivo=parser.parse(new FileReader(new File("C:\\Users\\fedej\\Locales\\seminario\\Transform_Backend\\src\\main\\java\\com\\transform\\daos\\datos.json"))).getAsJsonArray();
-			
-		Gson gson = new Gson();
-			
-		Producto[] productos=gson.fromJson(gsonArchivo, Producto[].class);
+		List<Producto> productos = this.getAllProducts();
 		
-		for (Producto p:productos) {
+		for (Producto p : productos) {
 			boolean alltags=true;
 			for (String t:tags) {
 				if(!p.getTags().contains(t)) {
@@ -106,15 +111,9 @@ public class daoProducto {
 		
 		Producto resultadoDeBusqueda=null;
 		
-		JsonParser parser = new JsonParser();
-		//para la obtener la direccion abrir las propiedades del archivo json y copiar direccion "location"
-		JsonArray gsonArchivo=parser.parse(new FileReader(new File("C:\\Users\\fedej\\Locales\\seminario\\Transform_Backend\\src\\main\\java\\com\\transform\\daos\\datos.json"))).getAsJsonArray();
-			
-		Gson gson = new Gson();
-			
-		Producto[] productos=gson.fromJson(gsonArchivo, Producto[].class);
+		List<Producto> productos = this.getAllProducts();
 		
-		for (Producto p:productos) {
+		for (Producto p : productos) {
 			if(p.getID().equals(busqueda)) {
 				resultadoDeBusqueda=p;
 			}
