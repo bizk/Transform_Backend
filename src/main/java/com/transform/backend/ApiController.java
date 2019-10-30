@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,12 +23,16 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
-import com.transform.dao.ProductoDAO;
+import com.transform.daos.daoProducto;
 import com.transform.models.Producto;
 
 @RestController
 @RequestMapping("controller")
 public class ApiController {
+
+	//We create the Gson consructor
+	Gson gson = new Gson();
+	
 
 	//Aca van los endpoints, este es un endpoint de prueba
 	//Cuando le pegamos aca nos va a devolver lo que le pidamos
@@ -62,6 +67,7 @@ public class ApiController {
 	}
 	
 	//EndPoint Example: localhost:8080/controller/searchByName?searchName=botella
+	@CrossOrigin
 	@RequestMapping(value="/searchByName", method = RequestMethod.GET)
 	@ResponseBody
 	public List<String> searchByNameEndPoint(@RequestParam("name") String name) {
@@ -70,7 +76,7 @@ public class ApiController {
 		//We create the Gson consructor
 		Gson gson = new Gson();
 		
-		List<Producto> productos = ProductoDAO.searchByName(name);
+		List<Producto> productos = new daoProducto().searchByName(name);
 		for(Producto pr: productos) {
 			String jsonProd = gson.toJson(pr);
 			jsonList.add(jsonProd);
@@ -82,11 +88,13 @@ public class ApiController {
 		return jsonList;
 	}
 
-	@RequestMapping(value="/searchByTagEndPoint", method = RequestMethod.GET)
+	@CrossOrigin
+	@RequestMapping(value="/searchByTag", method = RequestMethod.GET)
 	@ResponseBody
-	public List<String> searchByTagEndPoint(@RequestParam("tag1") String tag1, @RequestParam("tag2") String tag2) {
+	public List<String> searchByTag(@RequestParam("tag1") String tag1, @RequestParam("tag2") String tag2) {
 		List<String> jsonList = new ArrayList<String>();
 		//Producto mock (we should get this from the daos)
+		
 		ArrayList tags1 = new ArrayList<String>();
 		tags1.add("tag1");
 		tags1.add("tag2");
@@ -99,11 +107,7 @@ public class ApiController {
 		tags1.add("tag3");
 		Producto mockProducto2 = new Producto("botella2","botella 2", "estoEsUnaURL", "botella de vidrio", tags2);
 		String jsonProduct2 = gson.toJson(mockProducto2);
-
-		//We create the Gson consructor
-		Gson gson = new Gson();
-		
-		List<Producto> productos = ProductoDAO.searchByTag(tag1, tag2);
+		List<Producto> productos = new daoProducto().searchByTag(tags2);
 		for(Producto pr: productos) {
 			String jsonProd = gson.toJson(pr);
 			jsonList.add(jsonProd);
@@ -115,13 +119,13 @@ public class ApiController {
 		return jsonList;
 	}
 
+	@CrossOrigin
 	@RequestMapping(value="/searchById", method = RequestMethod.GET)
 	@ResponseBody
 	public String searchById(@RequestParam("id") String id) {
 		//We create the Gson consructor
 		Gson gson = new Gson();
-		
-		Producto product = ProductoDAO.searchById(id);
+		Producto product = new daoProducto().searchById(id);
 		String jsonProduct = gson.toJson(product);
 				
 		// # # # T O D O # # #

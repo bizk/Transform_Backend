@@ -1,5 +1,9 @@
 package com.transform.configs;
 
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+import com.mongodb.client.MongoDatabase;
+
 public class DbConfig {
 	private MongoClientURI url;
 	private MongoClient mongoClient;
@@ -15,7 +19,7 @@ public class DbConfig {
 	}
 
 	
-	//Singleton para realizar la conexión solo una vez
+	//Singleton para realizar la conexiï¿½n solo una vez
 	public static DbConfig getConfiguration(){
 		if(instancia == null){
 			instancia = new DbConfig();
@@ -23,7 +27,7 @@ public class DbConfig {
 		return instancia;
 	}
 	
-	//Método para obtener la DB, sobre la cual se opera
+	//Mï¿½todo para obtener la DB, sobre la cual se opera
 	public MongoDatabase getDB(){
 		return database;
 	}

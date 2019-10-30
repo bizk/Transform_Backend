@@ -1,8 +1,6 @@
 package com.transform.daos;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -10,9 +8,6 @@ import java.util.List;
 import org.bson.Document;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -62,16 +57,14 @@ public class daoProducto {
 	}
 	
 	//lee archivo .json
-	public List<Producto> searchByName(String busqueda) throws FileNotFoundException {
-		
+	public List<Producto> searchByName(String busqueda)  {
 		List<Producto> resultadoDeBusqueda=new ArrayList<Producto>();
-		
+		try {
 		List<Producto> productos = this.getAllProducts();
-		
 		for (Producto p : productos) {
 			
 			//creo que tambien sirve indexOf en lugar de contains
-			if (p.getNombre().contains(busqueda)) {
+			if (p.getNombre().toLowerCase().contains(busqueda.toLowerCase())) {
 				resultadoDeBusqueda.add(p);
 			}
 			
@@ -79,20 +72,24 @@ public class daoProducto {
 		
 		System.out.println(new Gson().toJson(resultadoDeBusqueda));
 		
-		return resultadoDeBusqueda;
+		}
+		catch(FileNotFoundException e) {
+			e.printStackTrace();
+		}
 		
+		return resultadoDeBusqueda;	
 	}
 	
-	public List<Producto> getObjetosArchTags(List<String> tags) throws FileNotFoundException {
+	public List<Producto> searchByTag(List<String> tags) {
 		
 		List<Producto> resultadoDeBusqueda=new ArrayList<Producto>();
-		
+		try {
 		List<Producto> productos = this.getAllProducts();
 		
 		for (Producto p : productos) {
 			boolean alltags=true;
 			for (String t:tags) {
-				if(!p.getTags().contains(t)) {
+				if(!p.getTags().contains(t.toLowerCase())) {
 					alltags=false;
 				}
 				
@@ -102,15 +99,19 @@ public class daoProducto {
 			}
 		}
 		System.out.println(new Gson().toJson(resultadoDeBusqueda));
+		}
+		catch(FileNotFoundException e) {
+			e.printStackTrace();
+		}
 		return resultadoDeBusqueda;
 		
 	}
 	
 	//este metodo busca por id pero el gson no guarda ids porque no estan especificados en la clase de productos
-	public Producto getObjetosArchID(String busqueda) throws FileNotFoundException {
+	public Producto searchById(String busqueda)  {
 		
 		Producto resultadoDeBusqueda=null;
-		
+		try {
 		List<Producto> productos = this.getAllProducts();
 		
 		for (Producto p : productos) {
@@ -120,6 +121,10 @@ public class daoProducto {
 		}
 		
 		System.out.println(new Gson().toJson(resultadoDeBusqueda));
+		}
+		catch(FileNotFoundException e) {
+			e.printStackTrace();
+		}
 		
 		return resultadoDeBusqueda;
 		
